@@ -1,0 +1,12 @@
+Inicializa partes de la placa, pines, perifericos y app_init (la aplicacion)
+While(1) -> un ciclo perpetuo que se realiza hasta q se apague el sistema
+
+Dentro del While(1) define funciones nombradas mas arriba en el código. Estas son:
+
+SysremClock_Config: iniciativa el oscilador y el clock 
+
+MX_USARY_UART_INIT: Esta función inicializa una interfaz de tipo HUART2, una variable de "manejador" utilizada para controlar el micro a través de HAL. Esta se inicializa con su respectiva paridad, bit de stop, modo Tx Y Rx y sin flow control
+
+MX_GPIO_Init: inicializa el botón B1 asignando el npumero de pin correspondiente. Lo configura como pin de entrada con interrupción. Además inicializa LD2 de la misma forma que B1.
+
+Error handler: manejo de errores, el usuario puede elegir reportar el nombre del archivo y la línea del error

@@ -1,0 +1,91 @@
+  app.c (app.h)
+   Endless loops, which execute tasks with fixed computing time. This 
+   sequential execution is only deviated from when an interrupt event occurs.
+
+...
+
+Define macros, para la cuenta inicial del contador, el tick inical del contador, el WCET inicial de las tasks, y el delay minimo, todos en 0.
+
+Define dos estructuras, una llamada task_cfg_t para las tasks, cuyos atributos son punteros a funciones que reciben un void* y devuelven void. La otra estructura llamada task_dta_t tiene un atributo de tipo integer de 32 bits que se llama WCET que significa worst-case execution time, almacena el peor tiempo de ejecucion en microsegundos.
+
+Despues define un vector de vectores de tipo task_cfg_t, la matriz queda armada de la siguiente forma: (todos los elementos son de tipo task_cfg_t)
+
+task_sensor_init	task_sensor_update	NULL
+
+task_system_init	task_system_update	NULL
+
+task_actuator_init	task_actuator_update NULL
+
+Cada fila corresponde al sensor, sistema y actuador, y las columnas 1 y 2 coresponden a los inicializadores y actualizadores.
+
+Define una macro con la cantidad de tareas.
+
+Define constantes de texto,
+
+--- p_sys info pal usuario
+
+--- p_app info pal usuario
+
+Define variables globales, no las inicializa: EXPLICAR PARA QUE
+
+--- g_app_cnt
+
+--- g_app_time_us
+
+--- g_app_tick_cnt (volatile)
+
+--- task_dta_list
+
+Metodo app_init:
+
+tiene una variable index para el for que va por la matriz de tareas
+
+imprime informacion para el usuario 
+
+inicia g_app_cnt con la macro (en cero)
+
+ejecuta todos los metodos de incializador de las tareas, e inicia sus WCET con la macro, (en cero)
+
+ejecuta cycle_counter_init();
+
+Metodo app_update:
+
+tiene una variable index
+
+tiene una variable cycle_counter_time_us
+
+primero chequea que sea el momento de correr las tareas (si g_app_tick_cnt es mayor al incializador)
+
+disminuye g_app_tick_cnt
+
+aumenta g_app_cnt
+
+setea g_app_time_us en cero
+
+tiene un metodo for, que se ejecuta tantas veces como tareas haya
+
+dentro del for:
+
+	cycle_counter_reset()
+
+	actualiza la tarea actual de la lista
+
+	guarda el tiempo que se tardo en ejecutar la tarea
+
+	si el tiempo es mayor al WCET de la tarea, lo actualiza.
+
+metodo HAL_SYSTICK_Callback
+
+aumenta todos los contadores de ticks.
+
+
+
+
+
+
+
+
+
+
+
+
