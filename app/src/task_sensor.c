@@ -172,27 +172,61 @@ void task_sensor_update(void *parameters)
 
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event)
 					{
-						put_event_task_system(p_task_sensor_cfg->signal_down);
-						p_task_sensor_dta->state = ST_BTN_XX_DOWN;
+						//put_event_task_system(p_task_sensor_cfg->signal_down);
+						p_task_sensor_dta->state = ST_BTN_XX_FALLING;
+						p_task_sensor_dta->tick = p_task_sensor_cfg->tick_max;
 					}
 
 					break;
 
 				case ST_BTN_XX_FALLING:
 
+					p_task_sensor_dta->tick = task_sensor_cfg_t->tick_max;
+					 if(p_task_sensor_dta->tick == 0){
+						 if(EV_BTN_XX_DOWN == p_task_sensor_dta->event){
+							 p_task_sensor_dta->state == ST_BTN_XX_DOWN;
+							 put_event_task_system(p_task_sensor_cfg->signal_down);
+						 }
+					 }else{
+						 p_task_sensor_dta->tick--;
+					 }
 					break;
 
 				case ST_BTN_XX_DOWN:
 
 					if (EV_BTN_XX_UP == p_task_sensor_dta->event)
 					{
-						put_event_task_system(p_task_sensor_cfg->signal_up);
-						p_task_sensor_dta->state = ST_BTN_XX_UP;
+						//put_event_task_system(p_task_sensor_cfg->signal_up);
+						p_task_sensor_dta->state = ST_BTN_XX_RISING;
+						p_task_sensor_dta->tick = p_task_sensor_cfg->tick_max;
 					}
 
 					break;
 
 				case ST_BTN_XX_RISING:
+
+					if (EV_BTN_XX_UP == p_task_sensor_dta->event)
+					{
+						if (p_task_sensor_dta->tick == 0)
+						{
+							put_event_task_system(p_task_sensor_cfg->signal_up);
+							p_task_sensor_dta->state = ST_BTN_XX_UP;
+						}else
+						{
+							p_task_sensor_dta->tick--;
+						}
+
+					}else if (EV_BTN_XX_DOWN == p_task_sensor_dta->event)
+					{
+						if (p_task_sensor_dta->tick == 0)
+						{
+							p_task_sensor_dta->state = ST_BTN_XX_DOWN;
+						}else
+						{
+							p_task_sensor_dta->tick--;
+						}
+					}
+
 
 					break;
 
